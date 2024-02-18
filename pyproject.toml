@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=60", "setuptools-scm>=8.0", "wheel"]
+
+[project]
+name = "pdftk-wrapper"
+dynamic = ["version"]
+authors = [{ name = "Mmanu Chaturvedi", email = "mmanu.chaturvedi@gmail.com" }]
+description = "A pdftk wrapper."
+dependencies = []
+
+scripts = { pdftk-remove-pages = "pdftk-remove-pages.main:main" }
+
+[tool.setuptools.packages.find]
+include = ["pdftk-remove-pages"]
+
+[tool.setuptools_scm]
