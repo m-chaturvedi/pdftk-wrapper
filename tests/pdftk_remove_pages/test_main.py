@@ -146,32 +146,32 @@ class TestPdftkRemovePagesMethods(unittest.TestCase):
         )
 
     def test_get_number_of_pages(self):
-        self.assertEqual(pdftk_module.get_number_of_pages("sample_1.pdf"), 195)
+        self.assertEqual(pdftk_module.get_number_of_pages("tests/sample_1.pdf"), 195)
 
     def test_run_command_in_bash(self):
-        output = pdftk_module.run_command_in_bash("ls -l sample_1.pdf")
-        self.assertTrue(output.endswith("sample_1.pdf\n"))
+        output = pdftk_module.run_command_in_bash("ls -l tests/sample_1.pdf")
+        self.assertTrue(output.endswith("tests/sample_1.pdf\n"))
 
     def test_run_command_in_bash_escape(self):
-        file_name = "sdfjk \ fjlkdsf \ fsdf^&#^*$*!*@&$*$1.pdf"
+        file_name = "tests/sdfjk \ fjlkdsf \ fsdf^&#^*$*!*@&$*$1.pdf"
         self.assertEqual(pdftk_module.get_number_of_pages(file_name), 5)
 
     def test_run_pdftk_command(self):
-        complicated_file_name = "sdfjk \ fjlkdsf \ fsdf^&#^*$*!*@&$*$1.pdf"
+        complicated_file_name = "tests/sdfjk \ fjlkdsf \ fsdf^&#^*$*!*@&$*$1.pdf"
         input_output_map = [
             (
-                ["sample_1.pdf", "1-100", "gitignore_output_1.pdf"],
-                "pdftk sample_1.pdf cat 101-195 output gitignore_output_1.pdf",
+                ["tests/sample_1.pdf", "1-100", "gitignore_output_1.pdf"],
+                "pdftk tests/sample_1.pdf cat 101-195 output gitignore_output_1.pdf",
                 int(195 - (100 - 1 + 1)),
             ),
             (
-                ["sample_1.pdf", "1-10,20-30,50-194", "gitignore_output_1.pdf"],
-                "pdftk sample_1.pdf cat 11-19 31-49 195-195 output gitignore_output_1.pdf",
+                ["tests/sample_1.pdf", "1-10,20-30,50-194", "gitignore_output_1.pdf"],
+                "pdftk tests/sample_1.pdf cat 11-19 31-49 195-195 output gitignore_output_1.pdf",
                 int(195 - ((10 - 1 + 1) + (30 - 20 + 1) + (194 - 50 + 1))),
             ),
             (
-                ["sample_1.pdf", "20-30,50-194", "gitignore_output_1.pdf"],
-                "pdftk sample_1.pdf cat 1-19 31-49 195-195 output gitignore_output_1.pdf",
+                ["tests/sample_1.pdf", "20-30,50-194", "gitignore_output_1.pdf"],
+                "pdftk tests/sample_1.pdf cat 1-19 31-49 195-195 output gitignore_output_1.pdf",
                 int(195 - ((30 - 20 + 1) + (194 - 50 + 1))),
             ),
             (
