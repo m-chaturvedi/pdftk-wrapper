@@ -82,7 +82,7 @@ def output_ranges_in_pdftk_format(page_ranges, total_pages):
         pdftk_pages += [f"{merged_pages[-1][1] + 1}-{total_pages}"]
 
     if len(pdftk_pages) > 0:
-        return ",".join(pdftk_pages)
+        return " ".join(pdftk_pages)
     else:
         raise RuntimeError(
             "No pages will be left after removing requested pages.  Consider deleting the file."
@@ -90,6 +90,10 @@ def output_ranges_in_pdftk_format(page_ranges, total_pages):
 
 
 def run_command_in_bash(cmd_string):
+    """Runs the command using the subprocess module in Bash.
+
+    :param cmd_string: The command string to be run.
+    """
     output = subprocess.check_output(
         "/bin/bash -c '" + cmd_string + "'", shell=True, text=True
     )
@@ -97,6 +101,10 @@ def run_command_in_bash(cmd_string):
 
 
 def get_number_of_pages(pdf_filename):
+    """Get number of pages in a pdf file. Doesn't check the existence of the file.
+
+    :param pdf_filename: path to the pdf.
+    """
     op = run_command_in_bash(f"pdftk {pdf_filename} dump_data")
     num_pages_regex = re.compile("NumberOfPages: (\d+)")
     num_pages_match = num_pages_regex.search(op)
@@ -105,15 +113,24 @@ def get_number_of_pages(pdf_filename):
     return num_pages
 
 
-def run_pdftk_command(args):
-    page_ranges = parse_pages(args.pages)
-    pdf_filename = args.pdf_filename
-    total_pages = get_number_of_pages(pdf_filename)
+def run_pdftk_command(input_file, page_string, output_file, dry_run=True):
+    """Run pdftk command using the arguments supplied
+
+    :param input_file: The input pdf from which the pages need to be removed.
+    :param page_string: Comma separated pages to remove.
+    :param output_file: The output pdf.
+    """
+    page_ranges = parse_pages(page_string)
+    total_pages = get_number_of_pages(input_file)
     pdftk_page_string = output_ranges_in_pdftk_format(page_ranges, total_pages)
-    __import__('pdb').set_trace()
+    pdftk_command = f"pdftk {input_file} cat {pdftk_page_string} output {output_file}"
+    run_command_in_bash(pdftk_command) if not dry_run else None
+    print(f"Running command: {pdftk_command}")
+    return pdftk_command
 
 
 def parse_arguments():
+    """Parses the arguments passed using argparse"""
     parser = argparse.ArgumentParser(
         prog="pdftk-remove-pages",
         description="A wrapper over pdftk to remove pages from a pdf.",
@@ -121,21 +138,29 @@ def parse_arguments():
     )
 
     parser.add_argument(
-        "pdf_filename", help="Path to the pdf file to remove pages from.", type=str
+        "input_file", help="Path to the pdf file to remove pages from.", type=str
     )
-    parser.add_argument("pages", help="Remove specific pages from the pdf.", type=str)
+    parser.add_argument(
+        "page_string", help="Remove specific pages from the pdf.", type=str
+    )
 
-    parser.add_argument("output_filename", help="Path of the output file.", type=str)
+    parser.add_argument("output_file", help="Path of the output file.", type=str)
 
     args = parser.parse_args()
-    if not os.path.isfile(args.pdf_filename):
-        raise RuntimeError(f"Pdf file doesn't exist: {args.pdf_filename}")
+    if not os.path.isfile(args.input_file):
+        raise RuntimeError(f"Pdf file doesn't exist: {args.input_file}")
     return args
 
 
 def main():
+    """The main function.  This is the entry point."""
     args = parse_arguments()
-    run_pdftk_command(args)
+    input_file, page_string, output_file = (
+        args.input_file,
+        args.page_string,
+        args.output_file,
+    )
+    run_pdftk_command(input_file, page_string, output_file, False)
 
 
 if __name__ == "__main__":

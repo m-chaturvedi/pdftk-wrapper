@@ -119,7 +119,7 @@ class TestPdftkRemovePagesMethods(unittest.TestCase):
         self.assertEqual(relevant_f([[1, 1], [1, 1]], 2), "2-2")
         self.assertEqual(
             relevant_f([[10, 10], [10, 10]], 11),
-            "1-9,11-11",
+            "1-9 11-11",
         )
 
         self.assertRaisesRegex(
@@ -139,11 +139,47 @@ class TestPdftkRemovePagesMethods(unittest.TestCase):
 
         self.assertEqual(relevant_f([[1, 2], [3, 10], [4, 56]], 100), "57-100")
 
-        self.assertEqual(relevant_f([[1, 3], [5, 10], [12, 15]], 15), "4-4,11-11")
+        self.assertEqual(relevant_f([[1, 3], [5, 10], [12, 15]], 15), "4-4 11-11")
 
         self.assertEqual(
             relevant_f([[1, 15], [101, 102], [5, 7], [1, 1]], 102), "16-100"
         )
+
+    def test_get_number_of_pages(self):
+        self.assertEqual(pdftk_module.get_number_of_pages("sample_1.pdf"), 195)
+
+    def test_run_command_in_bash(self):
+        output = pdftk_module.run_command_in_bash("ls -l sample_1.pdf")
+        self.assertTrue(output.endswith("sample_1.pdf\n"))
+
+    def test_run_pdftk_command(self):
+        input_output_map = [
+            (
+                ["sample_1.pdf", "1-100", "gitignore_output_1.pdf"],
+                "pdftk sample_1.pdf cat 101-195 output gitignore_output_1.pdf",
+                int(195 - (100 - 1 + 1)),
+            ),
+            (
+                ["sample_1.pdf", "1-10,20-30,50-194", "gitignore_output_1.pdf"],
+                "pdftk sample_1.pdf cat 11-19 31-49 195-195 output gitignore_output_1.pdf",
+                int(195 - ((10 - 1 + 1) + (30 - 20 + 1) + (194 - 50 + 1))),
+            ),
+            (
+                ["sample_1.pdf", "20-30,50-194", "gitignore_output_1.pdf"],
+                "pdftk sample_1.pdf cat 1-19 31-49 195-195 output gitignore_output_1.pdf",
+                int(195 - ((30 - 20 + 1) + (194 - 50 + 1))),
+            ),
+        ]
+
+        for input_output_tuple in input_output_map:
+            self.assertEqual(
+                pdftk_module.run_pdftk_command(*(input_output_tuple[0]), dry_run=False),
+                input_output_tuple[1],
+            )
+            self.assertEqual(
+                pdftk_module.get_number_of_pages("gitignore_output_1.pdf"),
+                input_output_tuple[2],
+            )
 
 
 if __name__ == "__main__":
