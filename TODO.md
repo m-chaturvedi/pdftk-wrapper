@@ -1,1 +1,2 @@
-1. Fix gitub workfows.
+1. Fix github workfows for publishing.
+2. Trigger tests for various python versions on github.
