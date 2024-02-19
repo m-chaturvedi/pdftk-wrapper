@@ -12,10 +12,12 @@ This is a Python wrapper over pdftk.  At present it supports only removing
 pages from a pdf.  Example of a run:
 
 ```
-pdftk-remove-pages ./sample_1.pdf 1,3-195 ./gitignore_sample_1.pdf
+pdftk-remove-pages ./tests/sample_1.pdf 1,3-195 ./gitignore_sample_1.pdf
 ```
 
 Assuming the file `sample_1.pdf` has 195 pages.  The above would remove the first page, and pages 3 up to 195 and output the resulting pdf to `gitignore_sample_1.pdf` . So the resulting file `gitignore_sample_1.pdf` would just contain one page which was the second page in `sample_1.pdf`.
+
+# 
 
 ```
 $  pdftk-remove-pages --help
