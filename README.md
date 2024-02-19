@@ -2,7 +2,11 @@
 
 ## Installation
 
-`python3 -m pip install pdftk-wrapper`
+```
+python3 -m pip install pdftk-wrapper
+```
+
+
 
 Has been tested with `python>=3.8`.
 
