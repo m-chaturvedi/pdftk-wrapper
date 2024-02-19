@@ -7,7 +7,9 @@ dynamic = ["version"]
 authors = [{ name = "Mmanu Chaturvedi", email = "mmanu.chaturvedi@gmail.com" }]
 description = "A pdftk wrapper."
 dependencies = []
-
+readme = "README.md"
+# TODO: Maybe works with previous pythons. as well.
+requires-python = ">=3.8"
 [project.scripts]
 pdftk-remove-pages = "pdftk_remove_pages.main:main"
 

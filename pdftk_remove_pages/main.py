@@ -141,7 +141,7 @@ def parse_arguments():
         "input_file", help="Path to the pdf file to remove pages from.", type=str
     )
     parser.add_argument(
-        "page_string", help="Remove specific pages from the pdf.", type=str
+            "page_string", help="Remove specific pages from the pdf. Example: 1-10,13,15-20,32", type=str
     )
 
     parser.add_argument("output_file", help="Path of the output file.", type=str)
