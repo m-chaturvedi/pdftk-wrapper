@@ -1,4 +1,12 @@
-# pdftk-wrapper
+# Welcome to pdftk-wrapper
+
+## Installation
+
+`python3 -m pip install pdftk-wrapper`
+
+Has been tested with `python>=3.8`.
+
+## Usage
 
 This is a Python wrapper over pdftk.  At present it supports only removing
 pages from a pdf.  Example of a run:
@@ -22,7 +30,4 @@ positional arguments:
 
 options:
   -h, --help   show this help message and exit
-
 ```
-
-
