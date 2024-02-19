@@ -3,6 +3,7 @@ import argparse
 import os
 import subprocess
 import sys
+from shlex import quote
 
 
 def merge_ranges(pages):
@@ -95,7 +96,7 @@ def run_command_in_bash(cmd_string):
     :param cmd_string: The command string to be run.
     """
     output = subprocess.check_output(
-        "/bin/bash -c '" + cmd_string + "'", shell=True, text=True
+        cmd_string, shell=True, text=True
     )
     return output
 
@@ -105,7 +106,7 @@ def get_number_of_pages(pdf_filename):
 
     :param pdf_filename: path to the pdf.
     """
-    op = run_command_in_bash(f"pdftk {pdf_filename} dump_data")
+    op = run_command_in_bash(f"pdftk {quote(pdf_filename)} dump_data")
     num_pages_regex = re.compile("NumberOfPages: (\d+)")
     num_pages_match = num_pages_regex.search(op)
     assert num_pages_match.group(0).startswith("NumberOfPages:")
@@ -123,9 +124,9 @@ def run_pdftk_command(input_file, page_string, output_file, dry_run=True):
     page_ranges = parse_pages(page_string)
     total_pages = get_number_of_pages(input_file)
     pdftk_page_string = output_ranges_in_pdftk_format(page_ranges, total_pages)
-    pdftk_command = f"pdftk {input_file} cat {pdftk_page_string} output {output_file}"
+    pdftk_command = f"pdftk {input_file} cat {pdftk_page_string} output {quote(output_file)}"
     run_command_in_bash(pdftk_command) if not dry_run else None
-    print(f"Running command: {pdftk_command}")
+    #  print(f"Running command: {pdftk_command}")
     return pdftk_command
 
 
@@ -147,7 +148,7 @@ def parse_arguments():
     parser.add_argument("output_file", help="Path of the output file.", type=str)
 
     args = parser.parse_args()
-    if not os.path.isfile(args.input_file):
+    if not os.path.isfile(os.path.expanduser(args.input_file)):
         raise RuntimeError(f"Pdf file doesn't exist: {args.input_file}")
     return args
 
@@ -156,7 +157,7 @@ def main():
     """The main function.  This is the entry point."""
     args = parse_arguments()
     input_file, page_string, output_file = (
-        args.input_file,
+        os.path.expanduser(args.input_file),
         args.page_string,
         args.output_file,
     )

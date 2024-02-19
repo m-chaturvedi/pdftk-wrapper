@@ -152,6 +152,11 @@ class TestPdftkRemovePagesMethods(unittest.TestCase):
         output = pdftk_module.run_command_in_bash("ls -l sample_1.pdf")
         self.assertTrue(output.endswith("sample_1.pdf\n"))
 
+    def test_run_command_in_bash_escape(self):
+        file_name = "sdfjk \ fjlkdsf \ fsdf^&#^*$*!*@&$*$1.pdf"
+        self.assertEqual(pdftk_module.get_number_of_pages(file_name), 5)
+
+
     def test_run_pdftk_command(self):
         input_output_map = [
             (
