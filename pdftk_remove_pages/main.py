@@ -90,14 +90,14 @@ def output_ranges_in_pdftk_format(page_ranges, total_pages):
         )
 
 
+# TODO: This runs in /bin/sh but the intent is to run in /bin/bash.  The problem we
+# saw was related to quoting, since the command to be run would be "/bin/bash -c 'pdftk ...'"
 def run_command_in_bash(cmd_string):
     """Runs the command using the subprocess module in Bash.
 
     :param cmd_string: The command string to be run.
     """
-    output = subprocess.check_output(
-        cmd_string, shell=True, text=True
-    )
+    output = subprocess.check_output(cmd_string, shell=True, text=True)
     return output
 
 
@@ -124,7 +124,9 @@ def run_pdftk_command(input_file, page_string, output_file, dry_run=True):
     page_ranges = parse_pages(page_string)
     total_pages = get_number_of_pages(input_file)
     pdftk_page_string = output_ranges_in_pdftk_format(page_ranges, total_pages)
-    pdftk_command = f"pdftk {input_file} cat {pdftk_page_string} output {quote(output_file)}"
+    pdftk_command = (
+        f"pdftk {quote(input_file)} cat {pdftk_page_string} output {quote(output_file)}"
+    )
     run_command_in_bash(pdftk_command) if not dry_run else None
     #  print(f"Running command: {pdftk_command}")
     return pdftk_command
@@ -142,7 +144,9 @@ def parse_arguments():
         "input_file", help="Path to the pdf file to remove pages from.", type=str
     )
     parser.add_argument(
-            "page_string", help="Remove specific pages from the pdf. Example: 1-10,13,15-20,32", type=str
+        "page_string",
+        help="Remove specific pages from the pdf. Example: 1-10,13,15-20,32",
+        type=str,
     )
 
     parser.add_argument("output_file", help="Path of the output file.", type=str)

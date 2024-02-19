@@ -156,8 +156,8 @@ class TestPdftkRemovePagesMethods(unittest.TestCase):
         file_name = "sdfjk \ fjlkdsf \ fsdf^&#^*$*!*@&$*$1.pdf"
         self.assertEqual(pdftk_module.get_number_of_pages(file_name), 5)
 
-
     def test_run_pdftk_command(self):
+        complicated_file_name = "sdfjk \ fjlkdsf \ fsdf^&#^*$*!*@&$*$1.pdf"
         input_output_map = [
             (
                 ["sample_1.pdf", "1-100", "gitignore_output_1.pdf"],
@@ -173,6 +173,11 @@ class TestPdftkRemovePagesMethods(unittest.TestCase):
                 ["sample_1.pdf", "20-30,50-194", "gitignore_output_1.pdf"],
                 "pdftk sample_1.pdf cat 1-19 31-49 195-195 output gitignore_output_1.pdf",
                 int(195 - ((30 - 20 + 1) + (194 - 50 + 1))),
+            ),
+            (
+                [complicated_file_name, "1,5", "gitignore_output_1.pdf"],
+                f"pdftk '{complicated_file_name}' cat 2-4 output gitignore_output_1.pdf",
+                int(5 - (1 + 1)),
             ),
         ]
 
