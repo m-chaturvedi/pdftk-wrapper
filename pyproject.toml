@@ -8,9 +8,13 @@ authors = [{ name = "Mmanu Chaturvedi", email = "mmanu.chaturvedi@gmail.com" }]
 description = "A pdftk wrapper."
 dependencies = []
 
-scripts = { pdftk-remove-pages = "pdftk-remove-pages.main:main" }
+[project.scripts]
+pdftk-remove-pages = "pdftk_remove_pages.main:main"
 
 [tool.setuptools.packages.find]
-include = ["pdftk-remove-pages"]
+include = ["pdftk_remove_pages", "tests"]
 
 [tool.setuptools_scm]
+
+[tool.black]
+line-length = 88
