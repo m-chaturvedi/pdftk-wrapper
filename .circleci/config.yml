@@ -10,7 +10,7 @@ jobs:
       - run:
           command: |
             sudo apt update
-            sudo apt install -y pdftk
+            sudo apt install -y python3 python3-venv python3-distutils pdftk
             python3 -m venv venv
             source venv/bin/activate
       - save_cache:
