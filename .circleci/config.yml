@@ -9,7 +9,7 @@ jobs:
           key: deps1-{{ .Branch }}
       - run:
           command: |
-            apt install pdftk
+            apt install -y pdftk
             python3 -m venv venv
             source venv/bin/activate
       - save_cache:
