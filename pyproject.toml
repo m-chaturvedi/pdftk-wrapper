@@ -15,10 +15,10 @@ requires-python = ">=3.8"
 Repository = "https://github.com/m-chaturvedi/pdftk-wrapper"
 
 [project.scripts]
-pdftk-remove-pages = "pdftk_remove_pages.main:main"
+pdftk-remove-pages = "pdftk_wrapper.pdftk_remove_pages:main"
 
 [tool.setuptools.packages.find]
-include = ["pdftk_remove_pages", "tests"]
+include = ["pdftk_wrapper", "tests"]
 
 [tool.setuptools_scm]
 
